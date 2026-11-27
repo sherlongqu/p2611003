@@ -189,6 +189,14 @@ Project layout:
 └── scripts/       test, backup and monitoring helpers
 ```
 
+## Contributors
+
+- **sherlongqu** — project owner, product direction, deployment and operations.
+- **DeepSeek Harness** — AI coding assistant: implementation, debugging,
+  refactoring, tests, security review and documentation.
+
+AI assistance is credited for transparency. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
