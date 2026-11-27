@@ -1,0 +1,43 @@
+services:
+  pubdocs:
+    build: .
+    image: pubdocs:1.0.0
+    container_name: pubdocs
+    restart: unless-stopped
+    # Bind the origin to loopback. Put a TLS reverse proxy or tunnel in front;
+    # do not expose this port directly to the internet.
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - pubdocs-data:/app/data
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    environment:
+      PORT: "8080"
+      DATA_DIR: /app/data
+      API_KEY: ${API_KEY:?set API_KEY in .env}
+      SESSION_SECRET: ${SESSION_SECRET:-}
+      SITE_NAME: "${SITE_NAME:-Report for public}"
+      SITE_TAGLINE: "${SITE_TAGLINE:-Public reports from ArchHub}"
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-50}
+      MAX_TOTAL_MB: ${MAX_TOTAL_MB:-2048}
+      TZ: Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "/app/pubdocs", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  pubdocs-data:

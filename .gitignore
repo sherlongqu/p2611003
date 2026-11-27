@@ -1,0 +1,14 @@
+# Runtime data and secrets
+.env
+.env.*
+!.env.example
+data/
+pubdocs
+*.log
+*.tgz
+
+# Local tooling and OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp

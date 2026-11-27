@@ -1,0 +1,96 @@
+{{define "view"}}{{template "head" .}}
+<main id="main" class="doc-page{{if or (eq .Doc.Type "pdf") (eq .Doc.Type "html")}} doc-page--reader{{end}}">
+  <div class="read-progress" id="readProgress" aria-hidden="true"></div>
+
+  <div class="doc-bar">
+    <div class="doc-bar-title">
+      {{if or (eq .Doc.Type "pdf") (eq .Doc.Type "html")}}<span class="doc-bar-name">{{.Doc.Title}}</span>{{end}}
+      <span class="doc-bar-meta">{{typeShort .Doc.Type}} · {{formatSize .Doc.Size}}{{if eq .Doc.Type "html"}} · sandboxed{{end}}{{if gt .ReadingTime 0}} · {{.ReadingTime}} min read{{end}}</span>
+    </div>
+    <div class="doc-bar-tools">
+      <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle color theme" title="Toggle color theme">
+        <svg class="ico-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        <svg class="ico-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"></path></svg>
+      </button>
+      {{if or (eq .Doc.Type "pdf") (eq .Doc.Type "html")}}
+      <button type="button" class="icon-btn" id="readerFullscreen" aria-label="Fullscreen" title="Fullscreen" aria-pressed="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+      </button>
+      {{else}}
+      <button type="button" class="icon-btn" data-copy-text="{{.ShareURL}}" aria-label="Copy link" title="Copy link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2.5"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H6a3 3 0 0 0-3 3v6.5A2.5 2.5 0 0 0 5.5 15"></path></svg>
+      </button>
+      {{end}}
+      <a class="icon-btn" href="{{.RawURL}}" target="_blank" rel="noopener" aria-label="Open original" title="Open original">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h7v7"></path><path d="M20 4l-8.5 8.5"></path><path d="M18 14v4.5A2.5 2.5 0 0 1 15.5 21h-9A2.5 2.5 0 0 1 4 18.5v-9A2.5 2.5 0 0 1 6.5 7H11"></path></svg>
+      </a>
+      <a class="icon-btn" href="{{.DownloadURL}}" aria-label="Download" title="Download">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v10"></path><path d="M8 11l4 4 4-4"></path><path d="M5 20h14"></path></svg>
+      </a>
+    </div>
+  </div>
+
+  {{if or (eq .Doc.Type "pdf") (eq .Doc.Type "html")}}
+  <section class="reader-stage" id="readerStage">
+    {{if eq .Doc.Type "pdf"}}
+    <iframe class="reader-frame" src="{{.RawURL}}#view=FitH&navpanes=0&toolbar=0" title="{{.Doc.Title}}" allowfullscreen></iframe>
+    <div class="pdf-fallback">
+      <div class="pdf-fallback-card">
+        <span class="kind kind-pdf">PDF</span>
+        <h2>{{.Doc.Title}}</h2>
+        <p>{{.Doc.Filename}} · {{formatSize .Doc.Size}}</p>
+        <a class="btn btn-solid" href="{{.RawURL}}" target="_blank" rel="noopener">Open PDF</a>
+        <a class="btn btn-ghost" href="{{.DownloadURL}}">Download</a>
+      </div>
+    </div>
+    {{else}}
+    <iframe class="reader-frame" src="{{.RawURL}}" sandbox="allow-scripts" title="{{.Doc.Title}}" allowfullscreen></iframe>
+    {{end}}
+  </section>
+  {{else}}
+  <div class="doc-body">
+    <header class="doc-head">
+      <h1>{{.Doc.Title}}</h1>
+      {{if .Doc.Description}}<p class="doc-lede">{{.Doc.Description}}</p>{{end}}
+      <p class="doc-meta">{{formatDate .Doc.UploadedAt}}{{range .Doc.Tags}} · <a href="/?tag={{urlquery .}}">#{{.}}</a>{{end}}</p>
+    </header>
+
+    {{if eq .Doc.Type "image"}}
+    <figure class="image-stage">
+      <img src="{{.RawURL}}" alt="{{.Doc.Title}}">
+      <figcaption>{{.Doc.Filename}} · {{formatSize .Doc.Size}}</figcaption>
+    </figure>
+    {{else}}
+    <div class="reading{{if not .TOC}} reading-solo{{end}}">
+      <article class="prose" id="prose" lang="{{.DocLang}}">{{.Rendered}}</article>
+      {{if .TOC}}
+      <aside class="toc-wrap" tabindex="0" aria-label="Contents">
+        <nav class="toc" aria-label="Table of contents">
+          <p class="toc-title">Contents</p>
+          {{range .TOC}}<a class="lv{{.Level}}" href="#{{.ID}}">{{.Text}}</a>{{end}}
+        </nav>
+      </aside>
+      {{end}}
+    </div>
+    {{end}}
+  </div>
+  {{end}}
+
+  {{if and .Doc.Versions (not (or (eq .Doc.Type "pdf") (eq .Doc.Type "html")))}}
+  <details class="history">
+    <summary>{{len .Doc.Versions}} earlier version{{if ne (len .Doc.Versions) 1}}s{{end}}</summary>
+    <ul>
+      {{range .Doc.Versions}}
+      <li>
+        <a href="/version/{{$.Doc.ID}}/{{.ID}}">{{formatDateTime .SavedAt}}</a>
+        <span>{{typeShort .Type}} · {{formatSize .Size}}</span>
+      </li>
+      {{end}}
+    </ul>
+  </details>
+  {{end}}
+</main>
+{{if .HasMermaid}}
+<script id="mermaidLoader" src="{{asset "mermaid-loader.js"}}" defer data-src="{{asset "mermaid.min.js"}}"></script>
+{{end}}
+{{template "footer" .}}{{end}}

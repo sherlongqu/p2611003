@@ -1,0 +1,74 @@
+{{define "api"}}{{template "head" .}}{{template "nav" .}}
+<main id="main" class="wrap page api-page">
+  <header class="page-head">
+    <p class="eyebrow">Developer API</p>
+    <h1>Publish with the API</h1>
+    <p>Use one HTTP endpoint to publish PDF, HTML, Markdown, plain text and images. Write requests need the admin key; reading endpoints are public.</p>
+    <p>In the examples, <code>BASE_URL</code> is the public origin of this installation, and <code>API_KEY</code> is the admin key configured on the server.</p>
+  </header>
+
+  <div class="api-docs">
+    <section class="panel">
+      <h2>Upload</h2>
+      <p class="api-endpoint"><code>POST /api/upload</code></p>
+      <pre class="mini-code"><code>curl --fail-with-body -sS \
+  -X POST $BASE_URL/api/upload \
+  -H "X-API-Key: $API_KEY" \
+  -F "file=@report.pdf" \
+  -F "title=Quarterly report" \
+  -F "tags=report,public"</code></pre>
+      <p>Optional fields: <code>title</code>, <code>description</code>, <code>tags</code> (comma separated, up to five).</p>
+    </section>
+
+    <section class="panel">
+      <h2>Authentication</h2>
+      <p>Send the key in either header:</p>
+      <pre class="mini-code"><code>X-API-Key: $API_KEY
+Authorization: Bearer $API_KEY</code></pre>
+      <p>The key is the <code>API_KEY</code> value in the server <code>.env</code>. It also unlocks the private studio.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Raw binary</h2>
+      <p>Send file bytes directly and pass the filename in the query string.</p>
+      <pre class="mini-code"><code>curl --fail-with-body -sS \
+  -X POST "$BASE_URL/api/upload?filename=report.pdf" \
+  -H "X-API-Key: $API_KEY" \
+  --data-binary @report.pdf</code></pre>
+    </section>
+
+    <section class="panel">
+      <h2>Manage documents</h2>
+      <ul class="api-links">
+        <li><code>GET /api/documents</code> — list, filter and paginate</li>
+        <li><code>GET /api/documents/{id}</code> — metadata</li>
+        <li><code>PUT /api/documents/{id}</code> — replace and archive a version</li>
+        <li><code>DELETE /api/documents/{id}</code> — delete</li>
+        <li><code>GET /api/documents/{id}/versions</code> — version history</li>
+      </ul>
+      <p><a class="text-link" href="/api/documents">Open the JSON index</a></p>
+    </section>
+
+    <section class="panel">
+      <h2>Markdown images</h2>
+      <p>External images and inline base64 images are downloaded and rewritten to local <code>/media/...</code> links at upload time.</p>
+      <ul class="steps">
+        <li>Public HTTP(S) only; private, loopback and SVG sources are skipped.</li>
+        <li>8 MB per image, 32 images and 32 MB per document.</li>
+        <li>Failed downloads keep the original URL and are logged.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Errors</h2>
+      <ul class="api-links">
+        <li><code>401</code> — missing or incorrect API key</li>
+        <li><code>400</code> — no file, empty file or missing filename</li>
+        <li><code>413</code> — file exceeds the per-file limit</li>
+        <li><code>415</code> — unsupported extension</li>
+        <li><code>507</code> — total storage quota exceeded</li>
+      </ul>
+    </section>
+  </div>
+</main>
+{{template "footer" .}}{{end}}

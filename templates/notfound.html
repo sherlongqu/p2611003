@@ -1,0 +1,11 @@
+{{define "notfound"}}{{template "head" .}}{{template "nav" .}}
+<main id="main" class="notfound wrap">
+  <p class="nf-code" aria-hidden="true">404</p>
+  <h1>This page is not on the shelf</h1>
+  <p>The link may have expired, or the document was deleted.</p>
+  <div class="nf-actions">
+    <a class="btn btn-solid" href="/">Back to library</a>
+    <a class="btn btn-ghost" href="/api">View the API</a>
+  </div>
+</main>
+{{template "footer" .}}{{end}}

@@ -1,0 +1,73 @@
+{{define "admin"}}{{template "head" .}}{{template "nav" .}}
+<main id="main" class="wrap page">
+  <header class="page-head admin-head">
+    <div>
+      <p class="eyebrow">{{.SiteName}} · Studio</p>
+      <h1>Studio</h1>
+      <p>Manage published documents, or upload something new.</p>
+    </div>
+    <div class="admin-actions">
+      <a class="btn btn-solid" href="/studio/upload">Upload documents</a>
+      <form method="post" action="/studio/logout">
+        <button type="submit" class="btn btn-ghost">Sign out</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="stat-row">
+    <div class="stat"><span>Documents</span><strong>{{.Stats.Count}}</strong></div>
+    <div class="stat"><span>Storage used</span><strong>{{formatSize .Stats.Bytes}}</strong></div>
+    <div class="stat"><span>Last published</span><strong>{{formatDate .Stats.Latest}}</strong></div>
+  </div>
+
+  <section class="admin-list">
+    <div class="section-head">
+      <div>
+        <h2>All documents <span class="count">{{.Stats.Count}}</span></h2>
+        <p>Deleting a document is permanent.</p>
+      </div>
+      <a class="text-link" href="/">View site <span aria-hidden="true">→</span></a>
+    </div>
+
+    {{if .Docs}}
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead>
+          <tr><th>Type</th><th>Title</th><th>Size</th><th>Published</th><th class="col-actions">Actions</th></tr>
+        </thead>
+        <tbody>
+          {{range .Docs}}
+          <tr>
+            <td><span class="kind kind-{{.Type}}">{{typeShort .Type}}</span></td>
+            <td class="col-title">
+              <a href="/d/{{.ID}}">{{.Title}}</a>
+              <span class="row-id">#{{.ID}}</span>
+            </td>
+            <td class="mono">{{formatSize .Size}}</td>
+            <td class="mono">{{formatDateTime .UploadedAt}}</td>
+            <td class="col-actions">
+              <a class="row-link" href="/d/{{.ID}}">View</a>
+              <form method="post" action="/studio/admin/replace/{{.ID}}" enctype="multipart/form-data" data-autosubmit-form>
+                <label class="row-link">Replace<input type="file" name="file" hidden accept=".pdf,.html,.htm,.md,.markdown,.txt,.png,.jpg,.jpeg,.webp,.gif,.avif,.svg"></label>
+                <noscript><button type="submit" class="row-link">Upload replacement</button></noscript>
+              </form>
+              <form method="post" action="/studio/admin/delete/{{.ID}}" data-confirm="Delete “{{.Title}}”? This cannot be undone.">
+                <button type="submit" class="row-link danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty empty-small">
+      <p class="empty-mark" aria-hidden="true">P</p>
+      <h3>No documents yet</h3>
+      <p>Upload the first document and it will appear here.</p>
+      <a class="btn btn-solid" href="/studio/upload">Upload documents</a>
+    </div>
+    {{end}}
+  </section>
+</main>
+{{template "footer" .}}{{end}}

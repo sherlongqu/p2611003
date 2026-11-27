@@ -1,0 +1,68 @@
+{{define "upload"}}{{template "head" .}}{{template "nav" .}}
+<main id="main" class="wrap page">
+  <header class="page-head">
+    <p class="eyebrow">{{.SiteName}} · Studio</p>
+    <h1>Upload documents</h1>
+    <p>Files go public immediately. PDF, HTML, Markdown, plain text and common images are supported, up to {{.MaxMB}} MB per file.</p>
+  </header>
+
+  {{if .Error}}<div class="alert" role="alert">{{.Error}}</div>{{end}}
+
+  <div class="upload-layout">
+    <form id="uploadForm" class="panel upload-panel" method="post" action="/studio/upload" enctype="multipart/form-data" data-max-mb="{{.MaxMB}}">
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose or drop files">
+        <input type="file" id="fileInput" name="file" multiple accept=".pdf,.html,.htm,.md,.markdown,.txt,.png,.jpg,.jpeg,.webp,.gif,.avif,.svg">
+        <div class="drop-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg>
+        </div>
+        <p class="drop-title">Drop files here, or click to choose</p>
+        <p class="drop-sub">PDF · HTML · Markdown · TXT · Images · up to {{.MaxMB}} MB each</p>
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Title</span>
+          <input type="text" name="title" maxlength="200" placeholder="Leave blank to use the file name">
+        </label>
+        <label class="field">
+          <span>Tags</span>
+          <input type="text" name="tags" maxlength="120" placeholder="Comma separated, up to five">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Description</span>
+        <textarea name="description" rows="3" maxlength="1000" placeholder="One sentence about this document (optional)"></textarea>
+      </label>
+
+      <div class="form-foot">
+        <span class="hint" id="uploadHint">You can select several files at once. With multiple files, each keeps its own title.</span>
+        <button type="submit" class="btn btn-solid" id="uploadBtn" disabled>Start upload</button>
+      </div>
+    </form>
+
+    <aside class="upload-aside">
+      <div class="panel side-panel">
+        <h3>Publishing notes</h3>
+        <ol class="steps">
+          <li>Choose files, then add a title, tags and a short description.</li>
+          <li>After upload you will land on the reading page.</li>
+          <li>Need a change? Delete the document and upload it again.</li>
+        </ol>
+      </div>
+      <div class="panel side-panel">
+        <h3>Formats</h3>
+        <div class="format-list">
+          <span class="kind kind-pdf">PDF</span>
+          <span class="kind kind-html">HTML</span>
+          <span class="kind kind-md">Markdown</span>
+          <span class="kind kind-txt">TXT</span>
+          <span class="kind kind-image">Image</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+{{template "footer" .}}{{end}}

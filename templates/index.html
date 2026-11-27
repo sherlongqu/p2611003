@@ -1,0 +1,45 @@
+{{define "index"}}{{template "head" .}}{{template "nav" .}}
+<main id="main">
+  <h1 class="sr-only">{{.SiteName}}</h1>
+  <section class="home-search wrap">
+    <form class="search search-home" method="get" action="/" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+      <input id="searchInput" type="search" name="q" value="{{.Q}}" placeholder="Search titles, descriptions, tags…" aria-label="Search public reports" aria-keyshortcuts="F" title="Press F to search" autocomplete="off">
+    </form>
+  </section>
+
+  <section class="library wrap" id="library">
+    {{if .Docs}}
+    <div class="grid grid-og">
+      {{range .Docs}}
+      <a class="card card-og" href="/d/{{.ID}}" aria-label="Read {{.Title}}">
+        <img class="card-og-img" data-card-art
+             src="/card/{{.ID}}.png?theme=light&v={{.UploadedAt.Unix}}"
+             data-light="/card/{{.ID}}.png?theme=light&v={{.UploadedAt.Unix}}"
+             data-dark="/card/{{.ID}}.png?theme=dark&v={{.UploadedAt.Unix}}"
+             width="1200" height="800" alt="" loading="lazy" decoding="async">
+        <span class="sr-only">{{.Title}} — {{typeLabel .Type}}, {{formatDate .UploadedAt}}</span>
+      </a>
+      {{end}}
+    </div>
+    {{end}}
+
+    {{if eq .Total 0}}
+    <div class="empty">
+      <span class="empty-mark" aria-hidden="true">R</span>
+      <h3>{{if .Filtering}}No reports match{{else}}No reports yet{{end}}</h3>
+      <p>{{if .Filtering}}Try another keyword, or clear the search.{{else}}Public reports are published privately through the studio.{{end}}</p>
+      {{if .Filtering}}<a class="btn btn-ghost" href="/">Clear search</a>{{end}}
+    </div>
+    {{end}}
+
+    {{if gt .Pages 1}}
+    <nav class="pager" aria-label="Pagination">
+      {{if .PrevURL}}<a class="pager-btn" href="{{.PrevURL}}">← Previous</a>{{else}}<span class="pager-btn is-disabled">← Previous</span>{{end}}
+      <span class="pager-info">{{.Page}} / {{.Pages}}</span>
+      {{if .NextURL}}<a class="pager-btn" href="{{.NextURL}}">Next →</a>{{else}}<span class="pager-btn is-disabled">Next →</span>{{end}}
+    </nav>
+    {{end}}
+  </section>
+</main>
+{{template "footer" .}}{{end}}
