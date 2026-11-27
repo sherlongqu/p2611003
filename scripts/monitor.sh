@@ -5,9 +5,9 @@
 # Stack, Cloudflare Health Checks, etc.).
 set -u
 
-URL="${PUBDOCS_HEALTH_URL:-http://127.0.0.1:8080/healthz}"
-NTFY="${PUBDOCS_NTFY_URL:-}"
-STATE_DIR="${PUBDOCS_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/pubdocs-monitor}"
+URL="${P2611003_HEALTH_URL:-http://127.0.0.1:8080/healthz}"
+NTFY="${P2611003_NTFY_URL:-}"
+STATE_DIR="${P2611003_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/p2611003-monitor}"
 STATE_FILE="$STATE_DIR/state"
 FAIL_FILE="$STATE_DIR/fails"
 

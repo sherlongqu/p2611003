@@ -87,7 +87,7 @@
     }, 30);
   }
 
-  document.addEventListener("pubdocs:themechange", scheduleRedraw);
+  document.addEventListener("p2611003:themechange", scheduleRedraw);
 
   // Also observe data-theme directly: this is independent of the order in
   // which app.js and the loader execute, and catches theme changes from any

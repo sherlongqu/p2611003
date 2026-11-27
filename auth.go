@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const sessionCookie = "pubdocs_admin"
+const sessionCookie = "p2611003_admin"
 
 type loginAttempt struct {
 	count int
@@ -39,7 +39,7 @@ func (a *App) apiKeyValid(r *http.Request) bool {
 
 func (a *App) sessionToken(exp int64) string {
 	mac := hmac.New(sha256.New, a.sessionSecret)
-	fmt.Fprintf(mac, "pubdocs-session-v1:%d", exp)
+	fmt.Fprintf(mac, "p2611003-session-v1:%d", exp)
 	return strconv.FormatInt(exp, 10) + "." + hex.EncodeToString(mac.Sum(nil))
 }
 

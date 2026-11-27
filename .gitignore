@@ -3,7 +3,7 @@
 .env.*
 !.env.example
 data/
-pubdocs
+p2611003
 *.log
 *.tgz
 

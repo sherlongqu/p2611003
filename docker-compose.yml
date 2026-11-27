@@ -1,15 +1,17 @@
+name: p2611003
+
 services:
-  pubdocs:
+  p2611003:
     build: .
-    image: pubdocs:1.0.0
-    container_name: pubdocs
+    image: p2611003:1.0.0
+    container_name: p2611003
     restart: unless-stopped
     # Bind the origin to loopback. Put a TLS reverse proxy or tunnel in front;
     # do not expose this port directly to the internet.
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - pubdocs-data:/app/data
+      - p2611003-data:/app/data
     tmpfs:
       - /tmp:size=128m,mode=1777
     environment:
@@ -33,11 +35,11 @@ services:
     cap_drop:
       - ALL
     healthcheck:
-      test: ["CMD", "/app/pubdocs", "healthcheck"]
+      test: ["CMD", "/app/p2611003", "healthcheck"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s
 
 volumes:
-  pubdocs-data:
+  p2611003-data:

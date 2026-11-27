@@ -80,7 +80,7 @@ func main() {
 	}
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmsgprefix)
-	log.SetPrefix("[pubdocs] ")
+	log.SetPrefix("[p2611003] ")
 
 	cfg := loadConfig()
 	store, err := NewStore(cfg.DataDir, cfg.MaxTotalMB<<20)
@@ -153,14 +153,14 @@ func newApp(cfg Config, store *Store) (*App, error) {
 		"asset":          asset,
 		"urlquery":       url.QueryEscape,
 	}
-	tmpl, err := template.New("pubdocs").Funcs(funcs).ParseFS(embedded, "templates/*.html")
+	tmpl, err := template.New("p2611003").Funcs(funcs).ParseFS(embedded, "templates/*.html")
 	if err != nil {
 		return nil, err
 	}
 
 	secret := cfg.SessionSecret
 	if secret == "" {
-		sum := sha256.Sum256([]byte(cfg.APIKey + "|pubdocs-session-v1"))
+		sum := sha256.Sum256([]byte(cfg.APIKey + "|p2611003-session-v1"))
 		secret = hex.EncodeToString(sum[:])
 	}
 
@@ -393,7 +393,7 @@ func (a *App) handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	writeJSON(w, http.StatusOK, map[string]any{
 		"ok":        true,
-		"service":   "pubdocs",
+		"service":   "p2611003",
 		"uptime":    time.Since(a.started).Round(time.Second).String(),
 		"documents": a.store.Stats().Count,
 	})

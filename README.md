@@ -67,7 +67,7 @@ cp .env.example .env
 
 # Build the static binary on the host. The image uses a scratch base.
 CGO_ENABLED=0 go build -buildmode=exe -tags timetzdata \
-  -trimpath -ldflags="-s -w" -o pubdocs .
+  -trimpath -ldflags="-s -w" -o p2611003 .
 
 docker compose up -d --build
 ```

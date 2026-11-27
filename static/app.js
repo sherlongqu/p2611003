@@ -63,9 +63,9 @@
     themeToggle.addEventListener("click", () => {
       const next = docEl.dataset.theme === "dark" ? "light" : "dark";
       docEl.dataset.theme = next;
-      try { localStorage.setItem("pubdocs-theme", next); } catch (_) { /* ignore */ }
+      try { localStorage.setItem("p2611003-theme", next); } catch (_) { /* ignore */ }
       paintThemeMeta();
-      document.dispatchEvent(new CustomEvent("pubdocs:themechange", { detail: { theme: next } }));
+      document.dispatchEvent(new CustomEvent("p2611003:themechange", { detail: { theme: next } }));
     });
   }
 
@@ -105,7 +105,7 @@
     clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => el.classList.remove("is-visible"), 2800);
   };
-  window.pubdocsToast = toast;
+  window.p2611003Toast = toast;
 
   /* ---------------------------------------------------------------- copy */
   const copyText = async (text) => {
